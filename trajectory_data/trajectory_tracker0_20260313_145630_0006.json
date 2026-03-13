@@ -1,0 +1,1026 @@
+{
+  "tracker_id": 0,
+  "start_timestamp": 1773410190.0422149,
+  "frame_count": 48,
+  "dt": 0.016666666666666666,
+  "ground_z_threshold": -0.22,
+  "image_dir": "trajectory_tracker0_20260313_145630_0006",
+  "frames": [
+    {
+      "frame_index": 0,
+      "timestamp": 1773410190.0422149,
+      "relative_time": 0.0,
+      "detection_pos": [
+        0.3780928887123723,
+        0.06839014792282863,
+        0.22478319242868716
+      ],
+      "kf_pos": [
+        0.3780928887123723,
+        0.06839014792282863,
+        0.22478319242868716
+      ],
+      "kf_vel": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000000.png",
+      "depth_file": "depth_000000.npy"
+    },
+    {
+      "frame_index": 1,
+      "timestamp": 1773410190.0554736,
+      "relative_time": 0.013258695602416992,
+      "detection_pos": [
+        0.38023560058379735,
+        0.07482565182333555,
+        0.27320093510613425
+      ],
+      "kf_pos": [
+        0.3802343336184069,
+        0.07482164667659168,
+        0.27316986507957763
+      ],
+      "kf_vel": [
+        0.013886022179895933,
+        0.0030168477950908114,
+        -0.1612337941319335
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000001.png",
+      "depth_file": "depth_000001.npy"
+    },
+    {
+      "frame_index": 2,
+      "timestamp": 1773410190.0739725,
+      "relative_time": 0.03175759315490723,
+      "detection_pos": [
+        0.3690768222636975,
+        0.07914004084499267,
+        0.3206995741654299
+      ],
+      "kf_pos": [
+        0.37306216718820745,
+        0.07767441841720951,
+        0.30283035913919776
+      ],
+      "kf_vel": [
+        -0.1842910510872301,
+        0.08385118048482855,
+        0.6253618289667366
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000002.png",
+      "depth_file": "depth_000002.npy"
+    },
+    {
+      "frame_index": 3,
+      "timestamp": 1773410190.0933547,
+      "relative_time": 0.05113983154296875,
+      "detection_pos": [
+        0.36191606156188294,
+        0.08381346474561312,
+        0.36253969943277436
+      ],
+      "kf_pos": [
+        0.3647736363101962,
+        0.08216597836119043,
+        0.3448827291691893
+      ],
+      "kf_vel": [
+        -0.32400776027314193,
+        0.17566145483537676,
+        1.418572739184704
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000003.png",
+      "depth_file": "depth_000003.npy"
+    },
+    {
+      "frame_index": 4,
+      "timestamp": 1773410190.1093743,
+      "relative_time": 0.06715941429138184,
+      "detection_pos": [
+        0.3589024092510381,
+        0.0910060671587198,
+        0.4051212184866713
+      ],
+      "kf_pos": [
+        0.35916107619418447,
+        0.08871878710606204,
+        0.39036306132083515
+      ],
+      "kf_vel": [
+        -0.3129054438694818,
+        0.2604736632066972,
+        1.778751429596915
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000004.png",
+      "depth_file": "depth_000004.npy"
+    },
+    {
+      "frame_index": 5,
+      "timestamp": 1773410190.123252,
+      "relative_time": 0.08103704452514648,
+      "detection_pos": [
+        0.3510915561010725,
+        0.09509734414850476,
+        0.44207831179520823
+      ],
+      "kf_pos": [
+        0.3524517018083122,
+        0.09415954082479946,
+        0.43146394805683674
+      ],
+      "kf_vel": [
+        -0.3242433435218443,
+        0.280024634308676,
+        1.8285577500527523
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000005.png",
+      "depth_file": "depth_000005.npy"
+    },
+    {
+      "frame_index": 6,
+      "timestamp": 1773410190.1389203,
+      "relative_time": 0.09670543670654297,
+      "detection_pos": [
+        0.35171791427575966,
+        0.10186863586429225,
+        0.4829689173815366
+      ],
+      "kf_pos": [
+        0.349462296133062,
+        0.10031204559998845,
+        0.4714546834265366
+      ],
+      "kf_vel": [
+        -0.2691444488637831,
+        0.30105983202029557,
+        1.804300638691722
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000006.png",
+      "depth_file": "depth_000006.npy"
+    },
+    {
+      "frame_index": 7,
+      "timestamp": 1773410190.1595728,
+      "relative_time": 0.11735796928405762,
+      "detection_pos": [
+        0.35322162738264495,
+        0.10793784102618245,
+        0.5072742776688072
+      ],
+      "kf_pos": [
+        0.3487189393552686,
+        0.10648112865595319,
+        0.5031662225240275
+      ],
+      "kf_vel": [
+        -0.20344308800167213,
+        0.3141197775851089,
+        1.6545007756454742
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000007.png",
+      "depth_file": "depth_000007.npy"
+    },
+    {
+      "frame_index": 8,
+      "timestamp": 1773410190.175777,
+      "relative_time": 0.1335620880126953,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3454929979570933,
+        0.11170576675013558,
+        0.5291716499660717
+      ],
+      "kf_vel": [
+        -0.18666015548792037,
+        0.31243177851751236,
+        1.4682438779002278
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000008.png",
+      "depth_file": "depth_000008.npy"
+    },
+    {
+      "frame_index": 9,
+      "timestamp": 1773410190.1895328,
+      "relative_time": 0.14731788635253906,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3425229214905459,
+        0.11690634617730322,
+        0.5521263615353416
+      ],
+      "kf_vel": [
+        -0.17046532310822948,
+        0.3113358390103269,
+        1.2868398997493118
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000009.png",
+      "depth_file": "depth_000009.npy"
+    },
+    {
+      "frame_index": 10,
+      "timestamp": 1773410190.210039,
+      "relative_time": 0.16782402992248535,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3398089669148856,
+        0.12211053876126027,
+        0.572094865771267
+      ],
+      "kf_vel": [
+        -0.15475874466340134,
+        0.3106312024648697,
+        1.1096459616776553
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000010.png",
+      "depth_file": "depth_000010.npy"
+    },
+    {
+      "frame_index": 11,
+      "timestamp": 1773410190.2259252,
+      "relative_time": 0.18371033668518066,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33734911545211194,
+        0.12728422946337933,
+        0.5891470623724017
+      ],
+      "kf_vel": [
+        -0.1394477831774975,
+        0.3104423088697105,
+        0.9360001560478272
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000011.png",
+      "depth_file": "depth_000011.npy"
+    },
+    {
+      "frame_index": 12,
+      "timestamp": 1773410190.2400599,
+      "relative_time": 0.1978449821472168,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33512075494668675,
+        0.13246285078720352,
+        0.6033404915130918
+      ],
+      "kf_vel": [
+        -0.12450075705870096,
+        0.3106836802297701,
+        0.7653331091447798
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000012.png",
+      "depth_file": "depth_000012.npy"
+    },
+    {
+      "frame_index": 13,
+      "timestamp": 1773410190.2559817,
+      "relative_time": 0.21376681327819824,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33316618327745856,
+        0.13765110627451213,
+        0.6146942784682453
+      ],
+      "kf_vel": [
+        -0.10980571190088648,
+        0.31132741391735624,
+        0.5971170890819594
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000013.png",
+      "depth_file": "depth_000013.npy"
+    },
+    {
+      "frame_index": 14,
+      "timestamp": 1773410190.2747955,
+      "relative_time": 0.23258066177368164,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33147849248329486,
+        0.1428517300386632,
+        0.6232481424334475
+      ],
+      "kf_vel": [
+        -0.09533232861145034,
+        0.3123706958883777,
+        0.43083403042035856
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000014.png",
+      "depth_file": "depth_000014.npy"
+    },
+    {
+      "frame_index": 15,
+      "timestamp": 1773410190.2885973,
+      "relative_time": 0.246382474899292,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3299862697052748,
+        0.14805648719810147,
+        0.6290698340632775
+      ],
+      "kf_vel": [
+        -0.08108583499447167,
+        0.3137663073292028,
+        0.26600787042686463
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000015.png",
+      "depth_file": "depth_000015.npy"
+    },
+    {
+      "frame_index": 16,
+      "timestamp": 1773410190.3052094,
+      "relative_time": 0.26299452781677246,
+      "detection_pos": null,
+      "kf_pos": [
+        0.32875297636644435,
+        0.15329441199980057,
+        0.6321392942772359
+      ],
+      "kf_vel": [
+        -0.06697543814787146,
+        0.3154803126029136,
+        0.10219596476293935
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000016.png",
+      "depth_file": "depth_000016.npy"
+    },
+    {
+      "frame_index": 17,
+      "timestamp": 1773410190.3228765,
+      "relative_time": 0.28066158294677734,
+      "detection_pos": null,
+      "kf_pos": [
+        0.32775115562145213,
+        0.15858811706577458,
+        0.6324790728347139
+      ],
+      "kf_vel": [
+        -0.05296780721152304,
+        0.3174056334459081,
+        -0.06098430679557814
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000017.png",
+      "depth_file": "depth_000017.npy"
+    },
+    {
+      "frame_index": 18,
+      "timestamp": 1773410190.3392072,
+      "relative_time": 0.29699230194091797,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3269830991895417,
+        0.16388104529367478,
+        0.6301110207900589
+      ],
+      "kf_vel": [
+        -0.038987100344145216,
+        0.3193597391470591,
+        -0.2237027792138822
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000018.png",
+      "depth_file": "depth_000018.npy"
+    },
+    {
+      "frame_index": 19,
+      "timestamp": 1773410190.3562014,
+      "relative_time": 0.31398653984069824,
+      "detection_pos": null,
+      "kf_pos": [
+        0.32645780572666977,
+        0.16921975328153263,
+        0.6250267187722951
+      ],
+      "kf_vel": [
+        -0.02504008788293295,
+        0.3211380455323821,
+        -0.3858590214841156
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000019.png",
+      "depth_file": "depth_000019.npy"
+    },
+    {
+      "frame_index": 20,
+      "timestamp": 1773410190.3728175,
+      "relative_time": 0.33060264587402344,
+      "detection_pos": null,
+      "kf_pos": [
+        0.326144084343927,
+        0.1745998056621973,
+        0.6172540222166756
+      ],
+      "kf_vel": [
+        -0.011113387842258647,
+        0.3226102338870194,
+        -0.5471340730198985
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000020.png",
+      "depth_file": "depth_000020.npy"
+    },
+    {
+      "frame_index": 21,
+      "timestamp": 1773410190.3884866,
+      "relative_time": 0.3462717533111572,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3260931338949904,
+        0.1799644230997706,
+        0.6067982606251768
+      ],
+      "kf_vel": [
+        0.002770594274064772,
+        0.3237358946044443,
+        -0.7071210628005528
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000021.png",
+      "depth_file": "depth_000021.npy"
+    },
+    {
+      "frame_index": 22,
+      "timestamp": 1773410190.407168,
+      "relative_time": 0.36495304107666016,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3262494730710751,
+        0.1853805226563356,
+        0.5936918738607817
+      ],
+      "kf_vel": [
+        0.016591195441458477,
+        0.324435992341501,
+        -0.8654370709107231
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000022.png",
+      "depth_file": "depth_000022.npy"
+    },
+    {
+      "frame_index": 23,
+      "timestamp": 1773410190.4219189,
+      "relative_time": 0.37970399856567383,
+      "detection_pos": null,
+      "kf_pos": [
+        0.32663408019489715,
+        0.19078615918381528,
+        0.5779709202340475
+      ],
+      "kf_vel": [
+        0.030310835072802605,
+        0.32475526211790473,
+        -1.0216593767292532
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000023.png",
+      "depth_file": "depth_000023.npy"
+    },
+    {
+      "frame_index": 24,
+      "timestamp": 1773410190.438282,
+      "relative_time": 0.39606714248657227,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3272439933580662,
+        0.19618138416844766,
+        0.5596726170987746
+      ],
+      "kf_vel": [
+        0.043878159171684125,
+        0.32471623447447806,
+        -1.175405389575566
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000024.png",
+      "depth_file": "depth_000024.npy"
+    },
+    {
+      "frame_index": 25,
+      "timestamp": 1773410190.4552534,
+      "relative_time": 0.4130384922027588,
+      "detection_pos": null,
+      "kf_pos": [
+        0.32807693259506693,
+        0.2016110945830724,
+        0.5388226172814812
+      ],
+      "kf_vel": [
+        0.057246539259387,
+        0.3242302211225279,
+        -1.3263454340119487
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000025.png",
+      "depth_file": "depth_000025.npy"
+    },
+    {
+      "frame_index": 26,
+      "timestamp": 1773410190.4727452,
+      "relative_time": 0.430530309677124,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3291517419498298,
+        0.20699832510565352,
+        0.5154821416032268
+      ],
+      "kf_vel": [
+        0.07043079139412543,
+        0.32334985710036074,
+        -1.474132295018157
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000026.png",
+      "depth_file": "depth_000026.npy"
+    },
+    {
+      "frame_index": 27,
+      "timestamp": 1773410190.4903903,
+      "relative_time": 0.44817543029785156,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3304076318683753,
+        0.21238152836820434,
+        0.48972602459297865
+      ],
+      "kf_vel": [
+        0.08343462869578723,
+        0.3221167265050895,
+        -1.618455986555789
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000027.png",
+      "depth_file": "depth_000027.npy"
+    },
+    {
+      "frame_index": 28,
+      "timestamp": 1773410190.5047948,
+      "relative_time": 0.46257996559143066,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33187430582957456,
+        0.21771011429618342,
+        0.46161392490329844
+      ],
+      "kf_vel": [
+        0.09623686767021775,
+        0.3206071103338547,
+        -1.7590352321778104
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000028.png",
+      "depth_file": "depth_000028.npy"
+    },
+    {
+      "frame_index": 29,
+      "timestamp": 1773410190.523383,
+      "relative_time": 0.4811680316925049,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33358914035316245,
+        0.2230687600012094,
+        0.4311359663963532
+      ],
+      "kf_vel": [
+        0.10854794678449259,
+        0.3186017519726648,
+        -1.8956902792825503
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000029.png",
+      "depth_file": "depth_000029.npy"
+    },
+    {
+      "frame_index": 30,
+      "timestamp": 1773410190.5390997,
+      "relative_time": 0.496884822845459,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3355033937452609,
+        0.22837649736469356,
+        0.3984239863561351
+      ],
+      "kf_vel": [
+        0.12061151869223861,
+        0.31625147585445507,
+        -2.0281760470633454
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000030.png",
+      "depth_file": "depth_000030.npy"
+    },
+    {
+      "frame_index": 31,
+      "timestamp": 1773410190.5557964,
+      "relative_time": 0.5135815143585205,
+      "detection_pos": null,
+      "kf_pos": [
+        0.33760430764067156,
+        0.2336429497322303,
+        0.3635490417981687
+      ],
+      "kf_vel": [
+        0.13230603443214428,
+        0.31370607842003995,
+        -2.156309117956835
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000031.png",
+      "depth_file": "depth_000031.npy"
+    },
+    {
+      "frame_index": 32,
+      "timestamp": 1773410190.5726058,
+      "relative_time": 0.5303909778594971,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3399126319842889,
+        0.2388459640137756,
+        0.32657276759521925
+      ],
+      "kf_vel": [
+        0.1436802320620632,
+        0.3108335125366034,
+        -2.2799734238773395
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000032.png",
+      "depth_file": "depth_000032.npy"
+    },
+    {
+      "frame_index": 33,
+      "timestamp": 1773410190.5899477,
+      "relative_time": 0.5477328300476074,
+      "detection_pos": null,
+      "kf_pos": [
+        0.3424070424517136,
+        0.24397577610357316,
+        0.2875927413395247
+      ],
+      "kf_vel": [
+        0.15476439437280884,
+        0.30779579224660575,
+        -2.399043468559595
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000033.png",
+      "depth_file": "depth_000033.npy"
+    },
+    {
+      "frame_index": 34,
+      "timestamp": 1773410190.6107159,
+      "relative_time": 0.5685009956359863,
+      "detection_pos": [
+        0.37654349905708406,
+        0.2966443046511929,
+        0.5056066072535027
+      ],
+      "kf_pos": [
+        0.37559991217377936,
+        0.294382182181929,
+        0.4924928499461887
+      ],
+      "kf_vel": [
+        0.22025499118896463,
+        0.38784572951009333,
+        -2.1645870894908192
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000034.png",
+      "depth_file": "depth_000034.npy"
+    },
+    {
+      "frame_index": 35,
+      "timestamp": 1773410190.6246696,
+      "relative_time": 0.5824546813964844,
+      "detection_pos": [
+        0.3815429705665926,
+        0.3024282325043719,
+        0.4704495916345315
+      ],
+      "kf_pos": [
+        0.38045527661966355,
+        0.3016252411602899,
+        0.46290377046366626
+      ],
+      "kf_vel": [
+        0.23199186407725647,
+        0.38510979951467633,
+        -2.2774454708524345
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000035.png",
+      "depth_file": "depth_000035.npy"
+    },
+    {
+      "frame_index": 36,
+      "timestamp": 1773410190.644042,
+      "relative_time": 0.6018271446228027,
+      "detection_pos": [
+        0.3820045254198588,
+        0.30483524241392856,
+        0.41906570109081065
+      ],
+      "kf_pos": [
+        0.38355874667635126,
+        0.30690641349417846,
+        0.4222878732445579
+      ],
+      "kf_vel": [
+        0.24007240703252564,
+        0.37883249354810317,
+        -2.39851248314067
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000036.png",
+      "depth_file": "depth_000036.npy"
+    },
+    {
+      "frame_index": 37,
+      "timestamp": 1773410190.6570847,
+      "relative_time": 0.6148698329925537,
+      "detection_pos": [
+        0.3920188405560781,
+        0.3145228501056705,
+        0.36867807714298184
+      ],
+      "kf_pos": [
+        0.38880649972670933,
+        0.31352768133846415,
+        0.37802156337730586
+      ],
+      "kf_vel": [
+        0.25068443488801995,
+        0.37436113085112016,
+        -2.5168497664984155
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000037.png",
+      "depth_file": "depth_000037.npy"
+    },
+    {
+      "frame_index": 38,
+      "timestamp": 1773410190.6742022,
+      "relative_time": 0.6319873332977295,
+      "detection_pos": [
+        0.38308081245729064,
+        0.3097818503816316,
+        0.31693387301082243
+      ],
+      "kf_pos": [
+        0.3908665585126545,
+        0.31754902102470234,
+        0.3312194319517279
+      ],
+      "kf_vel": [
+        0.25600741433524976,
+        0.36589367204285256,
+        -2.6311973857516175
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000038.png",
+      "depth_file": "depth_000038.npy"
+    },
+    {
+      "frame_index": 39,
+      "timestamp": 1773410190.6892805,
+      "relative_time": 0.6470656394958496,
+      "detection_pos": [
+        0.40718904735148514,
+        0.3293734794240067,
+        0.2578332977465619
+      ],
+      "kf_pos": [
+        0.39743752555802897,
+        0.3246770603190345,
+        0.28121639569851914
+      ],
+      "kf_vel": [
+        0.2670031062436248,
+        0.36174329994019544,
+        -2.7421068828866058
+      ],
+      "has_detection": true,
+      "kf_state": "upgrade",
+      "rgb_file": "rgb_000039.png",
+      "depth_file": "depth_000039.npy"
+    },
+    {
+      "frame_index": 40,
+      "timestamp": 1773410190.7055366,
+      "relative_time": 0.6633217334747314,
+      "detection_pos": null,
+      "kf_pos": [
+        0.4019615634598577,
+        0.33066070293187044,
+        0.2346676442247803
+      ],
+      "kf_vel": [
+        0.2745720865167196,
+        0.35613572623080214,
+        -2.8415154515825494
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000040.png",
+      "depth_file": "depth_000040.npy"
+    },
+    {
+      "frame_index": 41,
+      "timestamp": 1773410190.724759,
+      "relative_time": 0.6825442314147949,
+      "detection_pos": null,
+      "kf_pos": [
+        0.40658947040677706,
+        0.3365506591171701,
+        0.18653472399037813
+      ],
+      "kf_vel": [
+        0.28177666533657825,
+        0.3506029107504592,
+        -2.9362653932786906
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000041.png",
+      "depth_file": "depth_000041.npy"
+    },
+    {
+      "frame_index": 42,
+      "timestamp": 1773410190.7394137,
+      "relative_time": 0.6971988677978516,
+      "detection_pos": null,
+      "kf_pos": [
+        0.41133631790875547,
+        0.34235564158847204,
+        0.1368391363664434
+      ],
+      "kf_vel": [
+        0.2885736687084418,
+        0.3447674551967186,
+        -3.0264742841212926
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000042.png",
+      "depth_file": "depth_000042.npy"
+    },
+    {
+      "frame_index": 43,
+      "timestamp": 1773410190.7551162,
+      "relative_time": 0.7129013538360596,
+      "detection_pos": null,
+      "kf_pos": [
+        0.41619603643609543,
+        0.34805798606567645,
+        0.0856778150838526
+      ],
+      "kf_vel": [
+        0.2950321932062767,
+        0.3387693413464309,
+        -3.112202553928631
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000043.png",
+      "depth_file": "depth_000043.npy"
+    },
+    {
+      "frame_index": 44,
+      "timestamp": 1773410190.7732437,
+      "relative_time": 0.7310287952423096,
+      "detection_pos": null,
+      "kf_pos": [
+        0.4211689311355591,
+        0.3536477192316463,
+        0.03313220430503447
+      ],
+      "kf_vel": [
+        0.30113526717426936,
+        0.3327353118762272,
+        -3.1935391077575757
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000044.png",
+      "depth_file": "depth_000044.npy"
+    },
+    {
+      "frame_index": 45,
+      "timestamp": 1773410190.7902665,
+      "relative_time": 0.748051643371582,
+      "detection_pos": null,
+      "kf_pos": [
+        0.4262484912523478,
+        0.359128278753543,
+        -0.020715516626230376
+      ],
+      "kf_vel": [
+        0.30698649903400044,
+        0.32667129731175776,
+        -3.2705893520522156
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000045.png",
+      "depth_file": "depth_000045.npy"
+    },
+    {
+      "frame_index": 46,
+      "timestamp": 1773410190.805728,
+      "relative_time": 0.7635130882263184,
+      "detection_pos": null,
+      "kf_pos": [
+        0.4313951293087381,
+        0.36454189279197224,
+        -0.0758187018148333
+      ],
+      "kf_vel": [
+        0.3124237162317371,
+        0.32058650894134855,
+        -3.343494610752161
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000046.png",
+      "depth_file": "depth_000046.npy"
+    },
+    {
+      "frame_index": 47,
+      "timestamp": 1773410190.823067,
+      "relative_time": 0.7808520793914795,
+      "detection_pos": null,
+      "kf_pos": [
+        0.43663210592714624,
+        0.36984457933655007,
+        -0.13212713869248377
+      ],
+      "kf_vel": [
+        0.3173447175906469,
+        0.31447901722270744,
+        -3.4124006080155516
+      ],
+      "has_detection": false,
+      "kf_state": "predict",
+      "rgb_file": "rgb_000047.png",
+      "depth_file": "depth_000047.npy"
+    }
+  ]
+}
