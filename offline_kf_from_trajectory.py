@@ -6,9 +6,9 @@
 1) 主 KF：
    - 有 detection -> update
    - 无 detection -> predict
-2) 影子 KF（克隆 KF）：
-   - 当主 KF 的 update 次数达到 N 时克隆当前状态
-   - 克隆后只做 predict，不再 update
+2) 第二条轨迹（每帧前向预测）：
+    - 在每一帧主 KF 完成当帧 update/predict 后
+    - 从当前状态向前 predict N 步，记录该时刻的未来位置与速度
 
 输出：
 - 每条轨迹一个 *_offline_kf.json，包含两条 KF 的位置与速度序列
@@ -50,7 +50,7 @@ def _as_list_or_none(v):
     return [float(x) for x in v]
 
 
-def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_update_n: int):
+def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], predict_n: int):
     with open(json_path, "r", encoding="utf-8") as f:
         traj = json.load(f)
 
@@ -69,19 +69,18 @@ def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_up
     )
     ground_z_threshold = tracker_params.get("ground_z_threshold", -0.2)
 
-    clone_kf = None
-    main_upgrade_count = 0
-
     main_pos_hist, main_vel_hist = [], []
-    clone_pos_hist, clone_vel_hist = [], []
     det_pos_hist = []
     did_upgrade_hist = []
+
+    future_pos_hist = [None] * len(frames)
+    future_vel_hist = [None] * len(frames)
 
     # 与 zed_tracker_deploy 流程一致，保留清理调用
     kf_obs = [None]
     kf_obs_body = [None]
 
-    for fr in frames:
+    for i, fr in enumerate(frames):
         det = fr.get("detection_pos", None)
 
         # 1) predict（仅对已验证tracker）
@@ -91,20 +90,12 @@ def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_up
         # 2) cleanup grounded
         tracker.cleanup_grounded_balls(kf_obs, kf_obs_body)
 
-        clone_exists_before = clone_kf is not None
-
         # 3) detection update（复用 BallTracker 的验证/匹配/更新逻辑）
         before_update_count = tracker.kf_filters[0].update_count
         if det is not None:
             tracker.update([np.asarray(det, dtype=float)])
         after_update_count = tracker.kf_filters[0].update_count
         did_upgrade = after_update_count > before_update_count
-        if did_upgrade:
-            main_upgrade_count += 1
-
-        # 4) 达到N次upgrade后克隆（之后只predict）
-        if clone_kf is None and main_upgrade_count >= clone_update_n and tracker.kf_filters[0].initialized:
-            clone_kf = copy.deepcopy(tracker.kf_filters[0])
 
         main_state = tracker.get_state(0)
         m_pos, m_vel = _state_or_none(main_state)
@@ -112,15 +103,16 @@ def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_up
         main_vel_hist.append(m_vel)
         did_upgrade_hist.append(bool(did_upgrade))
 
-        if clone_kf is None:
-            clone_pos_hist.append(None)
-            clone_vel_hist.append(None)
-        else:
-            if clone_exists_before:
-                clone_kf.predict()
-            c_pos, c_vel = _state_or_none(clone_kf.get_state())
-            clone_pos_hist.append(c_pos)
-            clone_vel_hist.append(c_vel)
+        # 4) 每一帧都从当前主KF状态向前 predict N 步，作为第二条轨迹
+        if tracker.kf_filters[0].initialized:
+            future_kf = copy.deepcopy(tracker.kf_filters[0])
+            for _ in range(max(0, int(predict_n))):
+                future_kf.predict()
+            f_pos, f_vel = _state_or_none(future_kf.get_state())
+            tgt_idx = i + max(0, int(predict_n))
+            if 0 <= tgt_idx < len(frames):
+                future_pos_hist[tgt_idx] = f_pos
+                future_vel_hist[tgt_idx] = f_vel
 
         det_pos_hist.append(None if det is None else np.asarray(det, dtype=float))
 
@@ -129,7 +121,7 @@ def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_up
             "tracker_id": traj.get("tracker_id"),
             "source_json": str(json_path),
             "num_frames": len(frames),
-            "clone_update_n": int(clone_update_n),
+            "predict_n": int(predict_n),
             "dt": float(tracker_params["dt"]),
             "g": float(tracker_params["g"]),
             "process_noise": tracker_params.get("process_noise", 0.001),
@@ -146,8 +138,8 @@ def run_one_trajectory(json_path: Path, tracker_params: dict[str, Any], clone_up
                 "kf_main_pos": _as_list_or_none(main_pos_hist[i]),
                 "kf_main_vel": _as_list_or_none(main_vel_hist[i]),
                 "main_did_upgrade": bool(did_upgrade_hist[i]),
-                "kf_clone_pos": _as_list_or_none(clone_pos_hist[i]),
-                "kf_clone_vel": _as_list_or_none(clone_vel_hist[i]),
+                "kf_future_pos": _as_list_or_none(future_pos_hist[i]),
+                "kf_future_vel": _as_list_or_none(future_vel_hist[i]),
             }
             for i, fr in enumerate(frames)
         ],
@@ -173,27 +165,44 @@ def _annotate_speed(ax, pos_seq, vel_seq, every: int, color: str):
         ax.text(p[0], p[1], p[2], f"{speed:.2f}", color=color, fontsize=7)
 
 
-def _draw_speed_and_arrows(ax, pos_seq, vel_seq, color: str, arrow_len: float = 0.03):
-    """在每个有效点标注速度大小并绘制方向箭头。"""
-    for p, v in zip(pos_seq, vel_seq):
+def _draw_speed_and_arrows(
+    ax,
+    pos_seq,
+    vel_seq,
+    color: str,
+    arrow_len: float = 0.03,
+    every: int = 1,
+):
+    """按步长标注速度并批量绘制方向箭头，避免 3D 绘图对象过多导致卡顿。"""
+    every = max(1, int(every))
+
+    arrow_pos = []
+    arrow_dir = []
+    for i, (p, v) in enumerate(zip(pos_seq, vel_seq)):
         if p is None or v is None:
             continue
+        if i % every != 0:
+            continue
+
         speed = float(np.linalg.norm(v))
-        # 速度数值
         ax.text(p[0], p[1], p[2], f"{speed:.2f}", color=color, fontsize=7)
 
-        # 方向箭头
         if speed > 1e-9:
-            d = v / speed
-            ax.quiver(
-                p[0], p[1], p[2],
-                d[0], d[1], d[2],
-                length=arrow_len,
-                normalize=True,
-                color=color,
-                linewidth=1.2,
-                alpha=0.9
-            )
+            arrow_pos.append(np.asarray(p, dtype=float))
+            arrow_dir.append(np.asarray(v, dtype=float) / speed)
+
+    if arrow_pos:
+        pos = np.asarray(arrow_pos, dtype=float)
+        direc = np.asarray(arrow_dir, dtype=float)
+        ax.quiver(
+            pos[:, 0], pos[:, 1], pos[:, 2],
+            direc[:, 0], direc[:, 1], direc[:, 2],
+            length=arrow_len,
+            normalize=True,
+            color=color,
+            linewidth=1.2,
+            alpha=0.9,
+        )
 
 
 def _annotate_position_values(ax, pos_seq, color: str, prefix: str, every: int = 1):
@@ -271,13 +280,15 @@ def _draw_result_on_ax(
     main_pos_seq = [None if f["kf_main_pos"] is None else np.asarray(f["kf_main_pos"], dtype=float) for f in frames]
     main_vel_seq = [None if f["kf_main_vel"] is None else np.asarray(f["kf_main_vel"], dtype=float) for f in frames]
     main_upgrade_seq = [bool(f.get("main_did_upgrade", False)) for f in frames]
-    clone_pos_seq = [None if f["kf_clone_pos"] is None else np.asarray(f["kf_clone_pos"], dtype=float) for f in frames]
-    clone_vel_seq = [None if f["kf_clone_vel"] is None else np.asarray(f["kf_clone_vel"], dtype=float) for f in frames]
+    future_pos_seq = [None if f.get("kf_future_pos") is None else np.asarray(f["kf_future_pos"], dtype=float) for f in frames]
+    future_vel_seq = [None if f.get("kf_future_vel") is None else np.asarray(f["kf_future_vel"], dtype=float) for f in frames]
+
+    # main / future / detection 三类信息均按全点显示
 
     # 仅用于可视化显示的缩放（不改变速度数值）
     det_seq_vis = _scale_seq(det_seq, display_scale)
     main_pos_seq_vis = _scale_seq(main_pos_seq, display_scale)
-    clone_pos_seq_vis = _scale_seq(clone_pos_seq, display_scale)
+    future_pos_seq_vis = _scale_seq(future_pos_seq, display_scale)
 
     ax.clear()
 
@@ -297,14 +308,15 @@ def _draw_result_on_ax(
     main_xyz = _extract_xyz(main_pos_seq_vis)
     if show_positions and main_xyz is not None:
         ax.plot(*main_xyz, color="tab:blue", linewidth=2.0, label="KF main (update/predict)")
-        # 用点型区分 main 的 update/predict
-        for p, is_up in zip(main_pos_seq_vis, main_upgrade_seq):
-            if p is None:
-                continue
-            if is_up:
-                ax.scatter(p[0], p[1], p[2], color="tab:blue", marker="o", s=26, alpha=0.95)
-            else:
-                ax.scatter(p[0], p[1], p[2], color="tab:blue", marker="x", s=22, alpha=0.9)
+        # 用点型区分 main 的 update/predict，并批量绘制降低 3D artist 数量
+        up_points = [p for i, p in enumerate(main_pos_seq_vis) if p is not None and main_upgrade_seq[i]]
+        pred_points = [p for i, p in enumerate(main_pos_seq_vis) if p is not None and (not main_upgrade_seq[i])]
+        if up_points:
+            up_arr = np.asarray(up_points, dtype=float)
+            ax.scatter(up_arr[:, 0], up_arr[:, 1], up_arr[:, 2], color="tab:blue", marker="o", s=26, alpha=0.95)
+        if pred_points:
+            pred_arr = np.asarray(pred_points, dtype=float)
+            ax.scatter(pred_arr[:, 0], pred_arr[:, 1], pred_arr[:, 2], color="tab:blue", marker="x", s=22, alpha=0.9)
 
         if show_speed:
             _draw_speed_and_arrows(
@@ -313,27 +325,31 @@ def _draw_result_on_ax(
                 main_vel_seq,
                 color="tab:blue",
                 arrow_len=0.03 * max(display_scale, 1e-6),
+                every=1,
             )
         elif show_pos_values:
             _annotate_position_values(ax, main_pos_seq_vis, color="tab:blue", prefix="M", every=1)
 
-    clone_xyz = _extract_xyz(clone_pos_seq_vis)
-    if show_positions and clone_xyz is not None:
-        ax.plot(*clone_xyz, "--", color="tab:orange", linewidth=2.0, label="KF clone (predict only)")
-        for p in clone_pos_seq_vis:
-            if p is not None:
-                ax.scatter(p[0], p[1], p[2], color="tab:orange", marker="^", s=24, alpha=0.9)
+    future_xyz = _extract_xyz(future_pos_seq_vis)
+    if show_positions and future_xyz is not None:
+        horizon_n = int(result.get("meta", {}).get("predict_n", 0))
+        ax.plot(*future_xyz, "--", color="tab:orange", linewidth=2.0, label=f"KF predict +{horizon_n} step")
+        future_points = [p for p in future_pos_seq_vis if p is not None]
+        if future_points:
+            future_arr = np.asarray(future_points, dtype=float)
+            ax.scatter(future_arr[:, 0], future_arr[:, 1], future_arr[:, 2], color="tab:orange", marker="^", s=24, alpha=0.9)
 
         if show_speed:
             _draw_speed_and_arrows(
                 ax,
-                clone_pos_seq_vis,
-                clone_vel_seq,
+                future_pos_seq_vis,
+                future_vel_seq,
                 color="tab:orange",
                 arrow_len=0.03 * max(display_scale, 1e-6),
+                every=1,
             )
         elif show_pos_values:
-            _annotate_position_values(ax, clone_pos_seq_vis, color="tab:orange", prefix="C", every=1)
+            _annotate_position_values(ax, future_pos_seq_vis, color="tab:orange", prefix="F", every=1)
 
     # 起点标记
     start_main = _first_valid_point(main_pos_seq_vis)
@@ -341,10 +357,10 @@ def _draw_result_on_ax(
         ax.scatter(start_main[0], start_main[1], start_main[2], color="lime", marker="*", s=180, label="start_main")
         ax.text(start_main[0], start_main[1], start_main[2], "START_MAIN", color="lime", fontsize=9)
 
-    start_clone = _first_valid_point(clone_pos_seq_vis)
-    if show_positions and start_clone is not None:
-        ax.scatter(start_clone[0], start_clone[1], start_clone[2], color="gold", marker="*", s=160, label="start_clone")
-        ax.text(start_clone[0], start_clone[1], start_clone[2], "START_CLONE", color="gold", fontsize=9)
+    start_future = _first_valid_point(future_pos_seq_vis)
+    if show_positions and start_future is not None:
+        ax.scatter(start_future[0], start_future[1], start_future[2], color="gold", marker="*", s=160, label="start_future")
+        ax.text(start_future[0], start_future[1], start_future[2], "START_FUTURE", color="gold", fontsize=9)
 
     # 机器人体坐标系：X前, Y左, Z上
     ax.set_xlabel("X_forward (m)")
@@ -357,13 +373,13 @@ def _draw_result_on_ax(
     ax.quiver(0, 0, 0, 0, axis_len, 0, color="g", linewidth=2)
     ax.quiver(0, 0, 0, 0, 0, axis_len, color="b", linewidth=2)
 
-    all_points = det_seq_vis + main_pos_seq_vis + clone_pos_seq_vis
+    all_points = det_seq_vis + main_pos_seq_vis + future_pos_seq_vis
     _set_equal_aspect_3d(ax, all_points)
     _set_axis_ticks(ax, tick_step)
 
     ax.set_title(
         f"Offline KF Replay | tracker={result['meta']['tracker_id']} | "
-        f"clone@update={result['meta']['clone_update_n']}"
+        f"predict+N={result['meta'].get('predict_n', 0)}"
     )
     ax.legend(loc="best")
     ax.grid(True, alpha=0.3)
@@ -387,6 +403,74 @@ def plot_result(
         tick_step=tick_step,
     )
 
+    fig.tight_layout()
+    fig.savefig(png_path, dpi=150)
+    plt.close(fig)
+
+
+def _seq_to_xyz_arrays(seq):
+    n = len(seq)
+    x = np.full(n, np.nan, dtype=float)
+    y = np.full(n, np.nan, dtype=float)
+    z = np.full(n, np.nan, dtype=float)
+    for i, p in enumerate(seq):
+        if p is None:
+            continue
+        x[i], y[i], z[i] = float(p[0]), float(p[1]), float(p[2])
+    return x, y, z
+
+
+def plot_timeseries_components(result: dict[str, Any], png_path: Path):
+    """按真实时间步对比 main/future 的位置与速度分量。"""
+    frames = result["frames"]
+    n = len(frames)
+    t = np.arange(n, dtype=int)
+
+    main_pos_seq = [None if f["kf_main_pos"] is None else np.asarray(f["kf_main_pos"], dtype=float) for f in frames]
+    main_vel_seq = [None if f["kf_main_vel"] is None else np.asarray(f["kf_main_vel"], dtype=float) for f in frames]
+    future_pos_seq = [None if f["kf_future_pos"] is None else np.asarray(f["kf_future_pos"], dtype=float) for f in frames]
+    future_vel_seq = [None if f["kf_future_vel"] is None else np.asarray(f["kf_future_vel"], dtype=float) for f in frames]
+
+    mpx, mpy, mpz = _seq_to_xyz_arrays(main_pos_seq)
+    mvx, mvy, mvz = _seq_to_xyz_arrays(main_vel_seq)
+    fpx, fpy, fpz = _seq_to_xyz_arrays(future_pos_seq)
+    fvx, fvy, fvz = _seq_to_xyz_arrays(future_vel_seq)
+
+    fig, axes = plt.subplots(2, 3, figsize=(16, 9), sharex=True)
+    ax_px, ax_py, ax_pz = axes[0, 0], axes[0, 1], axes[0, 2]
+    ax_vx, ax_vy, ax_vz = axes[1, 0], axes[1, 1], axes[1, 2]
+
+    def _plot_pair(ax, y_main, y_future, title: str, ylabel: str):
+        # 同一时间轴叠加比较，点+线同时显示。
+        ax.plot(t, y_main, "-o", color="tab:blue", markersize=3.5, linewidth=1.4, label="main")
+        ax.plot(t, y_future, "--^", color="tab:orange", markersize=3.5, linewidth=1.4, label="future")
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.grid(True, alpha=0.3)
+        ax.legend(loc="best")
+
+    _plot_pair(ax_px, mpx, fpx, "Position X", "x (m)")
+    _plot_pair(ax_py, mpy, fpy, "Position Y", "y (m)")
+    _plot_pair(ax_pz, mpz, fpz, "Position Z", "z (m)")
+    _plot_pair(ax_vx, mvx, fvx, "Velocity X", "vx (m/s)")
+    _plot_pair(ax_vy, mvy, fvy, "Velocity Y", "vy (m/s)")
+    _plot_pair(ax_vz, mvz, fvz, "Velocity Z", "vz (m/s)")
+
+    for ax in axes[1, :]:
+        ax.set_xlabel("Time Step")
+
+    if n > 0:
+        step = max(1, n // 12)
+        xticks = np.arange(0, n, step)
+        if (n - 1) not in xticks:
+            xticks = np.append(xticks, n - 1)
+        for ax in axes.reshape(-1):
+            ax.set_xticks(xticks)
+            ax.set_xlim(0, max(1, n - 1))
+
+    tracker_id = result.get("meta", {}).get("tracker_id", "?")
+    predict_n = result.get("meta", {}).get("predict_n", "?")
+    fig.suptitle(f"KF Components vs Time Step | tracker={tracker_id} | predict+N={predict_n}")
     fig.tight_layout()
     fig.savefig(png_path, dpi=150)
     plt.close(fig)
@@ -470,10 +554,10 @@ def main():
         help="Tracker_config.yaml 路径",
     )
     parser.add_argument(
-        "--clone-update-n",
+        "--predict-n",
         type=int,
         default=None,
-        help="Clone KF when main KF update count reaches N (default from YAML tracker.clone_update_n)",
+        help="For each frame, predict main KF N steps ahead to draw the second line",
     )
     parser.add_argument(
         "--annotate-every",
@@ -506,6 +590,9 @@ def main():
     )
     args = parser.parse_args()
 
+    # 导出图片阶段统一使用无界面后端，避免 Windows/Tk 在批量绘图时卡住。
+    plt.switch_backend("Agg")
+
     traj_dir = Path(args.trajectory_dir)
     config_path = Path(args.config)
 
@@ -518,10 +605,10 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     tracker_params = _load_tracker_params(config_path)
-    clone_update_n = int(
-        args.clone_update_n
-        if args.clone_update_n is not None
-        else tracker_params.get("clone_update_n", 8)
+    predict_n = int(
+        args.predict_n
+        if args.predict_n is not None
+        else tracker_params.get("predict_n", 8)
     )
 
     json_files = sorted(traj_dir.glob("trajectory_tracker*_*.json"))
@@ -530,14 +617,18 @@ def main():
         return
 
     print(f"Found {len(json_files)} trajectories. Start offline replay...")
-    print(f"clone_update_n = {clone_update_n}")
+    print(f"predict_n = {predict_n}")
     print(f"output_dir = {output_dir}")
     all_items: list[dict[str, Any]] = []
     for jp in json_files:
-        result = run_one_trajectory(jp, tracker_params, clone_update_n)
+        result = run_one_trajectory(jp, tracker_params, predict_n)
+
+        main_points = sum(1 for fr in result["frames"] if fr.get("kf_main_pos") is not None)
+        future_points = sum(1 for fr in result["frames"] if fr.get("kf_future_pos") is not None)
 
         out_json = output_dir / f"{jp.stem}_offline_kf.json"
         out_png = output_dir / f"{jp.stem}_offline_kf_3d.png"
+        out_png_ts = output_dir / f"{jp.stem}_offline_kf_timeseries.png"
 
         with open(out_json, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
@@ -549,6 +640,7 @@ def main():
             display_scale=args.display_scale,
             tick_step=args.tick_step,
         )
+        plot_timeseries_components(result, out_png_ts)
 
         all_items.append({
             "source_json": str(jp),
@@ -558,16 +650,22 @@ def main():
         print(f"完成: {jp.name}")
         print(f"  输出轨迹: {out_json.name}")
         print(f"  输出图像: {out_png.name}")
+        print(f"  输出时序图: {out_png_ts.name}")
+        print(f"  轨迹点数: main={main_points}, future(+{predict_n})={future_points}")
 
     if not args.no_interactive and all_items:
         print("\nOpen interactive 3D browser: A/D switch, Q toggle view mode, ESC quit.")
-        browser = InteractiveTrajectoryBrowser(
-            all_items,
-            args.annotate_every,
-            display_scale=args.display_scale,
-            tick_step=args.tick_step,
-        )
-        browser.show()
+        try:
+            plt.switch_backend("TkAgg")
+            browser = InteractiveTrajectoryBrowser(
+                all_items,
+                args.annotate_every,
+                display_scale=args.display_scale,
+                tick_step=args.tick_step,
+            )
+            browser.show()
+        except Exception as e:
+            print(f"[warning] Interactive browser unavailable on current backend: {e}")
 
 
 if __name__ == "__main__":

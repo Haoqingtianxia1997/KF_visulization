@@ -13,9 +13,9 @@
 1. **主 KF**
    - 有 `detection_pos`：执行 `update`
    - 无 `detection_pos`：执行 `predict`
-2. **影子 KF（clone）**
-   - 当主 KF 的 `update` 次数达到 `N`（`clone_update_n`）时，从主 KF 深拷贝一份
-   - 克隆后仅执行 `predict`，不再 `update`
+2. **未来轨迹（每帧前向预测）**
+   - 主 KF 在每帧完成当帧 `update/predict` 后
+   - 从当前状态向前 `predict N` 步（`predict_n`），记录该未来时刻的位置与速度
 
 ## 输入与输出
 
@@ -28,7 +28,7 @@
 
 默认输出到 `trajectory_data/offline_kf_outputs/`：
 
-- `*_offline_kf.json`：每帧记录检测点、主 KF、clone KF 的位置/速度
+- `*_offline_kf.json`：每帧记录检测点、主 KF、future KF（N步前向预测）的位置/速度
 - `*_offline_kf_3d.png`：3D 轨迹图（可含速度箭头与数值）
 
 ## 环境安装
@@ -53,7 +53,7 @@ python offline_kf_from_trajectory.py
 python offline_kf_from_trajectory.py \
   --trajectory-dir trajectory_data \
   --config Tracker_config.yaml \
-  --clone-update-n 4 \
+   --predict-n 4 \
   --annotate-every 4 \
   --display-scale 1.0 \
   --tick-step 0.1
@@ -69,7 +69,7 @@ python offline_kf_from_trajectory.py --no-interactive
 
 - `--trajectory-dir`：轨迹 JSON 所在目录
 - `--config`：配置文件路径（读取 `tracker` 段）
-- `--clone-update-n`：主 KF 更新达到 N 次后克隆
+- `--predict-n`：每帧从主 KF 状态向前预测 N 步
 - `--annotate-every`：速度文本标注帧间隔
 - `--no-interactive`：仅导出 JSON/PNG，不打开交互窗口
 - `--output-dir`：输出目录

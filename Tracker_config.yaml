@@ -52,8 +52,8 @@ tracker:
   # 卡尔曼滤波观测噪声（降低值会提高对观测的信任）
   measurement_noise: [0.025,0.025,0.025] #[0.0001,0.0001,0.0002]
 
-  # 离线回放：主KF update达到N次后克隆一个仅predict的KF
-  clone_update_n: 5
+  # 离线回放：每一帧从当前主KF状态向前predict N步
+  predict_n: 5
   
   # 数据关联最大距离阈值 (m)
   max_distance: 0.5
