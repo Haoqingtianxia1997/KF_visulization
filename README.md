@@ -59,10 +59,10 @@ python offline_kf_from_trajectory.py \
   --tick-step 0.1
 ```
 
-仅导出结果、不弹交互窗口：
+导出结果、弹交互窗口：
 
 ```bash
-python offline_kf_from_trajectory.py --no-interactive
+python offline_kf_from_trajectory.py 
 ```
 
 ## 主要参数
@@ -72,7 +72,7 @@ python offline_kf_from_trajectory.py --no-interactive
 - `--predict-n`：每帧从主 KF 状态向前预测 N 步
 - `--annotate-every`：速度文本标注帧间隔
 - `--no-interactive`：仅导出 JSON/PNG，不打开交互窗口
-- `--output-dir`：输出目录
+- `--output-dir`：输出目录，默认在trajectory_data\offline_kf_outputs
 - `--display-scale`：可视化坐标缩放系数（仅显示缩放）
 - `--tick-step`：坐标轴刻度步长
 
